@@ -6,7 +6,6 @@ import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import superjson from "superjson";
-import type { Todo } from "../../../../generated/prisma/client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,7 +13,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Field,
@@ -26,18 +24,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { UpdateTodoSchemaType } from "@/features/todo/utils/schemas";
 import { UpdateTodoSchema } from "@/features/todo/utils/schemas";
+import type { Todo } from "../../../../generated/prisma/client";
 import { updateTodo } from "../server/actions";
 
 interface EditTodoDialogProps {
   todo: Todo;
-  children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
 
 export const EditTodoDialog = ({
   todo,
-  children,
   open,
   onOpenChange,
 }: EditTodoDialogProps) => {
@@ -67,21 +64,20 @@ export const EditTodoDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Edit Todo</DialogTitle>
         </DialogHeader>
-        <form id="edit-todo-form" onSubmit={form.handleSubmit(submitHandler)}>
+        <form id='edit-todo-form' onSubmit={form.handleSubmit(submitHandler)}>
           <FieldGroup>
             <Controller
-              name="title"
+              name='title'
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Title</FieldLabel>
                   <Input
-                    type="text"
+                    type='text'
                     {...field}
                     data-invalid={fieldState.invalid}
                     disabled={isPending}
@@ -93,7 +89,7 @@ export const EditTodoDialog = ({
               )}
             />
             <Controller
-              name="description"
+              name='description'
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
@@ -113,15 +109,14 @@ export const EditTodoDialog = ({
         </form>
         <DialogFooter>
           <Button
-            type="button"
-            variant="outline"
+            type='button'
+            variant='outline'
             onClick={() => onOpenChange?.(false)}
-            disabled={isPending}
-          >
+            disabled={isPending}>
             Cancel
           </Button>
-          <Button type="submit" form="edit-todo-form" disabled={isPending}>
-            {isPending && <Loader2 className="w-4 h-4 animate-spin" />} Save
+          <Button type='submit' form='edit-todo-form' disabled={isPending}>
+            {isPending && <Loader2 className='w-4 h-4 animate-spin' />} Save
             Changes
           </Button>
         </DialogFooter>

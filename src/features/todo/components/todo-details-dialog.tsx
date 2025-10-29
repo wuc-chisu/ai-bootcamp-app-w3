@@ -1,6 +1,6 @@
 "use client";
 
-import type { Todo } from "../../../../generated/prisma/client";
+import type { Todo, User } from "../../../../generated/prisma/client";
 import {
   Dialog,
   DialogContent,
@@ -8,10 +8,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { CalendarIcon, CheckCircle2Icon, CircleIcon } from "lucide-react";
 
 interface TodoDetailsDialogProps {
-  todo: Todo;
+  todo: Todo & { createdByUser?: User };
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -81,6 +82,43 @@ export const TodoDetailsDialog = ({
           </div>
 
           <Separator />
+
+          {/* Created By User */}
+          {todo.createdByUser && (
+            <>
+              <div className="space-y-2">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  Created By
+                </h3>
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={todo.createdByUser.image || undefined}
+                      alt={todo.createdByUser.name}
+                    />
+                    <AvatarFallback>
+                      {todo.createdByUser.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium">
+                      {todo.createdByUser.name}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {todo.createdByUser.email}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <Separator />
+            </>
+          )}
 
           {/* Timestamps */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import superjson from "superjson";
-import { CreateTodoSchema, UpdateTodoSchema } from "@/features/todo/utils/schemas";
+import { getServerSession } from "@/features/auth/lib/main";
+import {
+  CreateTodoSchema,
+  UpdateTodoSchema,
+} from "@/features/todo/utils/schemas";
 import db from "@/lib/db";
 
 type ActionState = {
@@ -16,6 +20,15 @@ export const createTodo = async (data: string): Promise<ActionState> => {
 
   const validatedData = CreateTodoSchema.safeParse(formData);
 
+  const session = await getServerSession();
+
+  if (!session?.user) {
+    return {
+      success: false,
+      message: "ERROR: Unauthorized",
+    };
+  }
+
   if (!validatedData.success) {
     return {
       success: false,
@@ -26,7 +39,10 @@ export const createTodo = async (data: string): Promise<ActionState> => {
 
   try {
     await db.todo.create({
-      data: validatedData.data,
+      data: {
+        ...validatedData.data,
+        createdBy: session.user.id,
+      },
     });
     revalidatePath("/");
 
@@ -97,7 +113,10 @@ export const deleteTodo = async (id: string): Promise<ActionState> => {
   }
 };
 
-export const toggleTodoComplete = async (id: string, completed: boolean): Promise<ActionState> => {
+export const toggleTodoComplete = async (
+  id: string,
+  completed: boolean
+): Promise<ActionState> => {
   try {
     await db.todo.update({
       where: { id },
@@ -108,7 +127,9 @@ export const toggleTodoComplete = async (id: string, completed: boolean): Promis
 
     return {
       success: true,
-      message: `SUCCESS: Todo marked as ${completed ? "completed" : "incomplete"}`,
+      message: `SUCCESS: Todo marked as ${
+        completed ? "completed" : "incomplete"
+      }`,
     };
   } catch (error) {
     return {
