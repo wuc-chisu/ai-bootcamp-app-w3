@@ -1,10 +1,16 @@
 import { UserProfile } from "@/features/auth/components/user-profile";
+import { getServerSession } from "@/features/auth/lib/main";
 import { CreateTodoForm } from "@/features/todo/components/create-todo-form";
 import { TodoItemList } from "@/features/todo/components/todo-item-list";
 import db from "@/lib/db";
 
 export default async function Page() {
+  const session = await getServerSession();
+
   const todos = await db.todo.findMany({
+    where: {
+      createdBy: session?.user?.id,
+    },
     include: {
       createdByUser: true,
     },
