@@ -78,7 +78,10 @@ jobs:
             # Download docker-compose.yml from repository
             curl -sSL https://raw.githubusercontent.com/${{ github.repository }}/main/docker-compose.yml -o docker-compose.yml
 
-            # Pull the latest images
+            # Logout from any existing Docker registry sessions to ensure clean pull
+            docker logout ghcr.io 2>/dev/null || true
+
+            # Pull the latest images (public images don't need authentication)
             docker-compose pull
 
             # Stop and remove old containers
