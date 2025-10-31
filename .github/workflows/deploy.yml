@@ -18,7 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Docker Buildx (for multi-platform builds and caching)
+      # Step 2: Convert repository owner to lowercase for Docker
+      - name: Set lowercase repository owner
+        id: repo_owner
+        run: echo "owner_lowercase=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
+      # Step 3: Set up Docker Buildx (for multi-platform builds and caching)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,7 +40,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository_owner }}/todo-app
+          images: ghcr.io/${{ steps.repo_owner.outputs.owner_lowercase }}/todo-app
           tags: |
             type=ref,event=branch
             type=sha,prefix={{branch}}-
@@ -67,7 +72,7 @@ jobs:
 
             # Create or update .env file with secrets
             cat > .env << EOF
-            GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}
+            GITHUB_REPOSITORY_OWNER=${{ steps.repo_owner.outputs.owner_lowercase }}
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
             BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}
