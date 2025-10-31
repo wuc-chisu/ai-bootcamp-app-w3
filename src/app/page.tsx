@@ -86,7 +86,7 @@ export default async function Page() {
               Manage Your Todos
             </h2>
             <p className='text-muted-foreground text-base md:text-lg text-balance'>
-              Stay organized and productive with our simple todo app
+              Stay organized and productive with WUC Todo
             </p>
           </div>
 
