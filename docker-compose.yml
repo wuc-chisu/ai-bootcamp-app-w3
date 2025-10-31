@@ -9,8 +9,8 @@ version: "3.9"
 services:
   # Next.js Application
   app:
-    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/todo-app:latest
-    container_name: todo-app
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/${GITHUB_REPOSITORY_NAME}:latest
+    container_name: ${GITHUB_REPOSITORY_NAME:-app}
     restart: unless-stopped
     ports:
       - "3000:3000"
