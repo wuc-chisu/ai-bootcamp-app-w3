@@ -79,7 +79,7 @@ export default async function Page() {
             <h1
               className='text-xl font-semibold tracking-tight'
               style={{ fontFamily: "var(--font-outfit)" }}>
-              My APP
+              MY APP Version 2
             </h1>
           </div>
           <ThemeToggle />
